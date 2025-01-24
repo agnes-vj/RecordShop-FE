@@ -1,6 +1,6 @@
 ﻿@using RecordShop_Frontend.Model
 
-<div class="card">
+<div class="card  justify-content-center">
     <div class="card-body">
         <h5 class="card-title">@Album.Title</h5>
         <h6 class="card-subtitle mb-2 text-muted">@Album.ArtistName</h6>
@@ -9,6 +9,10 @@
             <strong>Release Year:</strong> @Album.ReleaseYear<br>
             <strong>Stock:</strong> @Album.Stock
         </p>
+        <div class="d-flex justify-content-between mt-3">
+            <button class="btn btn-outline-primary btn-sm">Update</button>
+            <button class="btn btn-outline-danger btn-sm">Delete</button>
+        </div>
     </div>
 </div>
 @code {
