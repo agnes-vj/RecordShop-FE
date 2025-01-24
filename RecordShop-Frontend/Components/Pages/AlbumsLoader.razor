@@ -1,0 +1,28 @@
+﻿@page "/albums"
+@rendermode InteractiveServer
+@using RecordShop_Frontend.Model
+@using RecordShop_Frontend.Services
+@using RecordShop_Frontend.Components
+<h3>RecordsLoader</h3>
+@if (albums == null)
+{
+    <p>Loading albums...</p>
+}
+else
+{
+    <CascadingValue Value="albums">
+        <AlbumSummaryList  />
+    </CascadingValue>
+}
+
+@code {
+    List<AlbumDTO> albums { get; set; } = new();
+    [Inject]
+    private RecordShopApiClient RecordShopApiClient { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        albums = await RecordShopApiClient.GetAlbums();
+    }
+}
+
