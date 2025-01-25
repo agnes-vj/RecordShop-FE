@@ -1,20 +1,33 @@
 ﻿@using RecordShop_Frontend.Model
-@rendermode InteractiveServer
+@inject IJSRuntime jsr
+
 <h3>Albums</h3>
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
 
-        @foreach (var album in AlbumList)
+        @foreach (var album in Albums)
         {
             <div class="col">
-                <AlbumSummary Album="@album" />
+                <AlbumSummary album="@album" OnAlbumDelete="()=>UpdateDeleteInAlbumList(album)" />
             </div>
         }
 
 </div>
 @code
 {
-    [CascadingParameter]
-    public List<AlbumDTO> AlbumList { get; set; } = new();
+    [Parameter]
+    public List<AlbumDTO> Albums { get; set; }
+    [Parameter]
+    public EventCallback<List<AlbumDTO>> AlbumsChanged { get; set; }
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //      jsr.InvokeVoidAsync("alert",$"Albums Count now : {AlbumList.Count}");
+    // }
+    public void UpdateDeleteInAlbumList(AlbumDTO albumToRemove)
+    {
 
+        Albums.Remove(albumToRemove);
+         AlbumsChanged.InvokeAsync(Albums);
+
+    }
 
 }

@@ -1,4 +1,6 @@
 ﻿@using RecordShop_Frontend.Model
+@inject RecordShop_Frontend.Services.RecordShopApiClient ClientService
+
 
 <div class="card  justify-content-center">
     <div class="card-body">
@@ -9,14 +11,27 @@
             <strong>Release Year:</strong> @Album.ReleaseYear<br>
             <strong>Stock:</strong> @Album.Stock
         </p>
+        <p class="text-danger">@status</p>
         <div class="d-flex justify-content-between mt-3">
             <button class="btn btn-outline-primary btn-sm">Update</button>
-            <button class="btn btn-outline-danger btn-sm">Delete</button>
+            <button class="btn btn-outline-danger btn-sm" @onclick="DeleteAlbum">Delete</button>
+
         </div>
     </div>
 </div>
 @code {
     [Parameter]
     public AlbumDTO Album { get; set; }
+    private string status;
+
+    [Parameter]
+    public EventCallback<AlbumDTO> OnAlbumDelete { get; set; }
+    public async Task DeleteAlbum()
+    {
+        status = "Deleting...";
+        await ClientService.DeletAlbum(Album.Id);
+        status = string.Empty;
+        await OnAlbumDelete.InvokeAsync(Album);
+    }
 
 }

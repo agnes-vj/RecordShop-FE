@@ -4,25 +4,25 @@
 @using RecordShop_Frontend.Services
 @using RecordShop_Frontend.Components
 <h3>RecordsLoader</h3>
-@if (albums == null)
+@if (Albums == null)
 {
     <p>Loading albums...</p>
 }
 else
 {
-    <CascadingValue Value="albums">
-        <AlbumSummaryList  />
-    </CascadingValue>
+        <AlbumSummaryList  @bind-Albums="@Albums"/>
 }
 
 @code {
-    List<AlbumDTO> albums { get; set; } = new();
+
+    public List<AlbumDTO> Albums { get; set; } = new();
     [Inject]
     private RecordShopApiClient RecordShopApiClient { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
-        albums = await RecordShopApiClient.GetAlbums();
+        Albums = await RecordShopApiClient.GetAlbums();
     }
+
 }
 
