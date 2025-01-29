@@ -1,0 +1,92 @@
+﻿@using RecordShop_Frontend.Services
+@using RecordShop_Frontend.Model
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+@page "/AddAlbum"
+
+      <div class="card shadow-lg p-1">
+            <h5 class="card-header">Add New Album</h5>
+            <div class="card-body">
+        <EditForm FormName="addAlbum" Model="NewAlbum" OnValidSubmit="SaveAlbum">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <InputText id="title" class="form-control" @bind-Value="NewAlbum.Title" />
+                            <ValidationMessage For="@(() => NewAlbum.Title)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="artist" class="form-label">Artist</label>
+                            <InputText id="artist" class="form-control" @bind-Value="NewAlbum.ArtistName" />
+                            <ValidationMessage For="@(() => NewAlbum.ArtistName)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="genre" class="form-label">Genre</label>
+                            <InputText id="genre" class="form-control" @bind-Value="NewAlbum.MusicGenre" />
+                            <ValidationMessage For="@(() => NewAlbum.MusicGenre)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="releaseDate" class="form-label">Release Date</label>
+                            <InputNumber id="releaseDate" class="form-control" @bind-Value="NewAlbum.ReleaseYear" />
+                            <ValidationMessage For="@(() => NewAlbum.ReleaseYear)" />
+                        </div>
+
+                    <div class="mb-3">
+                        <label for="stock" class="form-label">Stock</label>
+                        <InputNumber id="stock" class="form-control" @bind-Value="NewAlbum.Stock" />
+                        <ValidationMessage For="@(() => NewAlbum.Stock)" />
+                    </div>
+
+                        <div class="card-footer justify-content-around align-content-center">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" @onclick=NavigateBack>Cancel</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+
+
+@if (!string.IsNullOrEmpty(statusMessage))
+{
+    <div class="alert alert-info mt-3">@statusMessage</div>
+}
+
+@code {
+    private AlbumDTO NewAlbum = new AlbumDTO();
+    private bool isModalVisible = false;
+    private string statusMessage = string.Empty;
+    [Inject]
+    private RecordShopApiClient ApiClient { get; set; } = default!;
+
+    public async Task SaveAlbum()
+    {
+        try
+        {
+            statusMessage = "Saving album...";
+            var result = await ApiClient.AddAlbum(NewAlbum); 
+            statusMessage = result.ErrorMessage;
+
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"Error: {ex.Message}";
+        }
+    }
+
+
+    private async Task NavigateBack()
+    {
+        Console.WriteLine("InsideBack");
+        var isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to leave without saving?" );
+        if (isConfirmed)
+        {
+            NavigationManager.NavigateTo("/albums");
+        }
+    }
+
+}
