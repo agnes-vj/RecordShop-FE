@@ -4,25 +4,60 @@
 @using RecordShop_Frontend.Services
 @using RecordShop_Frontend.Components
 <h3>RecordsLoader</h3>
+
 @if (Albums == null)
 {
-    <p>Loading albums...</p>
+    <div class="d-flex align-items-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <span class="ms-2">Loading albums...</span>
+    </div>
+}
+else if ( albumsResult != null && albumsResult.HasError)
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>Error:</strong> @albumsResult.ErrorMessage
+    </div>
 }
 else
 {
-        <AlbumSummaryList  @bind-Albums="@Albums"/>
+    <AlbumSummaryList Albums="@Albums" AlbumsChanged="UpdateAlbumsList" />
 }
 
 @code {
 
+    private Response<List<AlbumDTO>> albumsResult = null;
+    
     public List<AlbumDTO> Albums { get; set; } = new();
-    [Inject]
-    private RecordShopApiClient RecordShopApiClient { get; set; } = default!;
+
 
     protected override async Task OnInitializedAsync()
     {
-        Albums = await RecordShopApiClient.GetAlbums();
+        await LoadAlbums();
     }
 
-}
+    private async Task LoadAlbums()
+    {
+        try
+        {
+            var apiClient = new RecordShopApiClient();
+            albumsResult = await apiClient.GetAlbums();
+            Albums = albumsResult.Item ?? new();
+        }
+        catch (Exception ex)
+        {
+            albumsResult = new Response<List<AlbumDTO>>
+                {
+                    HasError = true,
+                    ErrorMessage = $"Error loading albums: {ex.Message}"
+                };
+        }
+    }
 
+    private async Task UpdateAlbumsList(List<AlbumDTO> updatedAlbums)
+    {
+        Albums = updatedAlbums;
+        StateHasChanged(); 
+    }
+}

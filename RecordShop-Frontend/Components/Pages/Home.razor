@@ -1,7 +1,10 @@
-﻿@page "/"
+﻿@using RecordShop_Frontend.Model
+@page "/"
 @rendermode InteractiveServer
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
-
 Welcome to Melody Record Shop.
+<RecordDetails Album="@album"/>
+@code{
+    public AlbumDTO album = new() { Id = 1, Title="tttt", ArtistName = "xxx", MusicGenre = "POP", ReleaseYear = 1978, Stock =10 };
+}

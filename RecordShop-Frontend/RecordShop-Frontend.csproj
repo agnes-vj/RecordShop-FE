@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>RecordShop-Frontend</RootNamespace>
     <AssemblyName>$(AssemblyName.Replace(' ', '_'))</AssemblyName>
+    <UserSecretsId>820c8146-0b92-4666-9d01-383e1c0217ae</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

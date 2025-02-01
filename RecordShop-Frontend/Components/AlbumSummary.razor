@@ -1,5 +1,5 @@
 ﻿@using RecordShop_Frontend.Model
-@inject RecordShop_Frontend.Services.RecordShopApiClient ClientService
+@using RecordShop_Frontend.Services
 
 
 <div class="card  justify-content-center">
@@ -22,16 +22,30 @@
 @code {
     [Parameter]
     public AlbumDTO Album { get; set; }
-    private string status;
-
     [Parameter]
     public EventCallback<AlbumDTO> OnAlbumDelete { get; set; }
-    public async Task DeleteAlbum()
+ 
+    private string status;
+
+    private async Task DeleteAlbum()
     {
         status = "Deleting...";
-        await ClientService.DeletAlbum(Album.Id);
-        status = string.Empty;
-        await OnAlbumDelete.InvokeAsync(Album);
+        try
+        {
+            var apiClient = new RecordShopApiClient();
+            var response = await apiClient.DeleteAlbum(Album.Id);
+            if (response == "SUCCESS")
+            {
+                await OnAlbumDelete.InvokeAsync(Album);
+            }
+            else
+            {
+                status = "Error deleting album: " + response;
+            }
+        }
+        catch (Exception ex)
+        {
+            status = "Failed to delete: " + ex.Message;
+        }
     }
-
 }

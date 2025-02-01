@@ -1,8 +1,8 @@
 ﻿using RecordShop_Frontend.Model;
 
-public class AlbumLoadResult
+public class Response<T>
 {
-    public List<AlbumDTO> Albums { get; set; }
+    public T Item { get; set; }
     public bool HasError { get; set; }
     public string ErrorMessage { get; set; }
 

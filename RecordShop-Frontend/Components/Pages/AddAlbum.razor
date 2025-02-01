@@ -5,72 +5,126 @@
 @rendermode InteractiveServer
 @page "/AddAlbum"
 
-      <div class="card shadow-lg p-1">
-            <h5 class="card-header">Add New Album</h5>
-            <div class="card-body">
-        <EditForm FormName="addAlbum" Model="NewAlbum" OnValidSubmit="SaveAlbum">
-                        <DataAnnotationsValidator />
-                        <ValidationSummary />
+ <div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">🎵 Add New Album</h5>
+        </div>
+        <div class="card-body">
+            <EditForm FormName="AddAlbum" Model="NewAlbum" OnValidSubmit="SaveAlbum">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-                        <div class="mb-3">
-                            <label for="title" class="form-label">Title</label>
-                            <InputText id="title" class="form-control" @bind-Value="NewAlbum.Title" />
-                            <ValidationMessage For="@(() => NewAlbum.Title)" />
+
+                <div class="mb-3">
+                    <label class="form-label">Album Title</label>
+                    <InputText class="form-control" @bind-Value="NewAlbum.Title" placeholder="Enter album title" />
+                    <ValidationMessage For="@(() => NewAlbum.Title)" />
+                </div>
+
+
+                <div class="mb-3 position-relative">
+                    <label class="form-label">Artist</label>
+                    <InputText class="form-control" @bind-Value="NewAlbum.ArtistName" placeholder="Search or enter artist name" @oninput="CheckArtistExists" />
+                    <ValidationMessage For="@(() => NewAlbum.ArtistName)" />
+
+
+                    @if (ArtistNotFound)
+                    {
+                        <div class="mt-2">
+                            <span class="text-warning">⚠ Artist not found.</span>
+                            <button class="btn btn-sm btn-success ms-2" @onclick="OpenArtistModal">+ Add Artist</button>
                         </div>
+                    }
+                </div>
 
-                        <div class="mb-3">
-                            <label for="artist" class="form-label">Artist</label>
-                            <InputText id="artist" class="form-control" @bind-Value="NewAlbum.ArtistName" />
-                            <ValidationMessage For="@(() => NewAlbum.ArtistName)" />
-                        </div>
+                <!-- Genre -->
+                <div class="mb-3">
+                    <label class="form-label">Genre</label>
+                    <InputText class="form-control" @bind-Value="NewAlbum.MusicGenre" placeholder="Enter music genre" />
+                    <ValidationMessage For="@(() => NewAlbum.MusicGenre)" />
+                </div>
 
-                        <div class="mb-3">
-                            <label for="genre" class="form-label">Genre</label>
-                            <InputText id="genre" class="form-control" @bind-Value="NewAlbum.MusicGenre" />
-                            <ValidationMessage For="@(() => NewAlbum.MusicGenre)" />
-                        </div>
+                <!-- Release Year -->
+                <div class="mb-3">
+                    <label class="form-label">Release Year</label>
+                    <InputNumber class="form-control" @bind-Value="NewAlbum.ReleaseYear" />
+                    <ValidationMessage For="@(() => NewAlbum.ReleaseYear)" />
+                </div>
 
-                        <div class="mb-3">
-                            <label for="releaseDate" class="form-label">Release Date</label>
-                            <InputNumber id="releaseDate" class="form-control" @bind-Value="NewAlbum.ReleaseYear" />
-                            <ValidationMessage For="@(() => NewAlbum.ReleaseYear)" />
-                        </div>
+                <!-- Stock -->
+                <div class="mb-3">
+                    <label class="form-label">Stock</label>
+                    <InputNumber class="form-control" @bind-Value="NewAlbum.Stock" />
+                    <ValidationMessage For="@(() => NewAlbum.Stock)" />
+                </div>
 
-                    <div class="mb-3">
-                        <label for="stock" class="form-label">Stock</label>
-                        <InputNumber id="stock" class="form-control" @bind-Value="NewAlbum.Stock" />
-                        <ValidationMessage For="@(() => NewAlbum.Stock)" />
+                <!-- Submit & Cancel -->
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">💾 Save Album</button>
+                    <button type="button" class="btn btn-secondary" @onclick="NavigateBack">🚪 Cancel</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+    <!-- Status Message -->
+    @if (!string.IsNullOrEmpty(statusMessage))
+    {
+        <div class="alert alert-info mt-3">@statusMessage</div>
+    }
+
+    <!-- Modal for Adding New Artist -->
+    @if (ShowArtistModal)
+    {
+        <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">🎤 Add New Artist</h5>
+                        <button type="button" class="btn-close" @onclick="CloseArtistModal"></button>
                     </div>
-
-                        <div class="card-footer justify-content-around align-content-center">
-                            <button type="submit" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-secondary" @onclick=NavigateBack>Cancel</button>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Artist Name</label>
+                            <InputText class="form-control" @bind-Value="NewArtist.Name" placeholder="Enter artist name" />
                         </div>
-                    </EditForm>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <InputTextArea class="form-control" @bind-Value="NewArtist.About" placeholder="Short artist bio" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success" @onclick="SaveArtist">✅ Save Artist</button>
+                        <button class="btn btn-secondary" @onclick="CloseArtistModal">❌ Cancel</button>
+                    </div>
                 </div>
             </div>
-
-
-@if (!string.IsNullOrEmpty(statusMessage))
-{
-    <div class="alert alert-info mt-3">@statusMessage</div>
-}
-
+        </div>
+    }
+ </div>
 @code {
-    private AlbumDTO NewAlbum = new AlbumDTO();
-    private bool isModalVisible = false;
+    private AlbumDTO NewAlbum = new();
+    private Artist NewArtist = new();
+    private bool ShowArtistModal = false;
+    private bool ArtistNotFound = false;
+    private List<string> SuggestedArtists = new();
     private string statusMessage = string.Empty;
-    [Inject]
-    private RecordShopApiClient ApiClient { get; set; } = default!;
 
-    public async Task SaveAlbum()
+    private async Task SaveAlbum()
     {
         try
         {
+            var apiClient = new RecordShopApiClient();
             statusMessage = "Saving album...";
-            var result = await ApiClient.AddAlbum(NewAlbum); 
+            var result = await apiClient.AddAlbum(NewAlbum);
             statusMessage = result.ErrorMessage;
 
+            if (!result.HasError)
+            {
+                statusMessage = "Album added successfully! 🎉";
+                NewAlbum = new AlbumDTO(); 
+            }
         }
         catch (Exception ex)
         {
@@ -78,15 +132,55 @@
         }
     }
 
+    private async Task CheckArtistExists(ChangeEventArgs e)
+    {
+        string input = e.Value?.ToString() ?? "";
+        var apiClient = new RecordShopApiClient();
+
+        if (string.IsNullOrWhiteSpace(input)) return;
+
+
+        string normalizedInput = NormalizeString(input);
+        var response = await apiClient.GetArtistByName(normalizedInput); 
+
+        ArtistNotFound = (response.Item == null);
+    }
+
+    private string NormalizeString(string input)
+    {
+        return input.Trim().ToLowerInvariant().Replace(" ", "");
+    }
+
+
+    private void OpenArtistModal()
+    {
+        ShowArtistModal = true;
+        NewArtist = new();
+    }
+
+    private async Task SaveArtist()
+    {
+        var apiClient = new RecordShopApiClient();
+        Response<Artist> response = await apiClient.AddArtist(NewArtist);
+        ShowArtistModal = false;
+        if (response.HasError)
+            statusMessage = response.ErrorMessage;
+        statusMessage = "🎤 New artist added successfully!";
+        NewAlbum.ArtistName = NewArtist.Name;
+        ArtistNotFound = false;
+    }
+
+    private void CloseArtistModal()
+    {
+        ShowArtistModal = false;
+    }
 
     private async Task NavigateBack()
     {
-        Console.WriteLine("InsideBack");
-        var isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to leave without saving?" );
+        var isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to leave without saving?");
         if (isConfirmed)
         {
             NavigationManager.NavigateTo("/albums");
         }
     }
-
 }

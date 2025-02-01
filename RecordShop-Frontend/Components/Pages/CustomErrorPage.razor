@@ -1,0 +1,22 @@
+﻿@* @page "/Error/{StatusCode: int}" *@
+@code{
+    [Parameter]
+    public int StatusCode { get; set; }
+}
+<h3>@StatusCode</h3>
+@{
+    if (StatusCode == 404)
+    {
+        <p>Sorry! Page Not Found (404)</p>
+        <p>We couldn't find the albums you're looking for. Please try again later or contact support if the issue persists.</p>
+    }
+    else if (StatusCode == 500)
+    {
+        <p>Sorry! Something Went Wrong (500)</p>
+        <p>We encountered an unexpected error while trying to load the albums. Please try again later or contact support if the issue persists.</p>
+    }
+    else
+    {
+        <p>Something went wrong. Please try again later.</p>
+    }
+}

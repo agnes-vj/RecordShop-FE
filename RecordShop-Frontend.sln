@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecordShop-Frontend", "RecordShop-Frontend\RecordShop-Frontend.csproj", "{2A3B4E4A-B96B-4F13-AF84-665AE6573B33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecordShop-Frontend", "RecordShop-Frontend\RecordShop-Frontend.csproj", "{2A3B4E4A-B96B-4F13-AF84-665AE6573B33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecordShop-Frontend.Client", "RecordShop-Frontend.Client\RecordShop-Frontend.Client.csproj", "{78317431-0DF0-4048-AE10-D0C9911CCDD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecordShop-Frontend.Client", "RecordShop-Frontend.Client\RecordShop-Frontend.Client.csproj", "{78317431-0DF0-4048-AE10-D0C9911CCDD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

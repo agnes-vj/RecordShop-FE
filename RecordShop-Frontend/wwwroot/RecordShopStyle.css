@@ -1,0 +1,31 @@
+﻿
+.header {
+    height: 150px;
+    background-image: url('/images/music-whiteBG.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.shop-name {
+    font-size: 2rem;
+    color: #486387;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+.sidebar {
+    width: 200px;
+    min-height: calc(100vh - 150px);
+    background-image: linear-gradient(80deg, rgb(142, 187, 206) 0%, #486387 70%);
+}
+
+.sidebar-link {
+    color: #2f3946;
+}
+
+.footer {
+    background-color: #f8f9fa;
+    color: #486387;
+    font-size: 0.6rem;
+    padding: 5px 0;
+}

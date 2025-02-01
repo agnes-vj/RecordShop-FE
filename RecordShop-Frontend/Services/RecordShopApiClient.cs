@@ -8,17 +8,20 @@ namespace RecordShop_Frontend.Services
     {
         string BASE_URL;
         string albumsUrl;
+        string artistUrl;
 
-        HttpClient _httpClient = new HttpClient();
-        public RecordShopApiClient(IConfiguration configuration)
+        private HttpClient _httpClient;
+
+        public RecordShopApiClient()
         {
-            BASE_URL = configuration["BACKEND_URL:Dev"];
+            BASE_URL = "https://localhost:7074";
             albumsUrl = $"{BASE_URL}/api/albums";
-            Console.WriteLine("Albums url " + albumsUrl);
+            artistUrl = $"{BASE_URL}/api/artists";
         }
-        public async Task<AlbumResponse> GetAlbums()
+        public async Task<Response<List<AlbumDTO>>> GetAlbums()
         {
-            var result = new AlbumResponse();
+            _httpClient = new HttpClient();
+            var result = new Response<List<AlbumDTO>>();
             using (_httpClient)
             {
                 try
@@ -27,26 +30,113 @@ namespace RecordShop_Frontend.Services
 
                     if (response.IsSuccessStatusCode)
                     {
-                        result.Albums = await response.Content.ReadFromJsonAsync<List<AlbumDTO>>();                       
+                        result.Item = await response.Content.ReadFromJsonAsync<List<AlbumDTO>>();
+
 
                     }
                     else
                     {
                         result.HasError = true;
-                        switch (response.StatusCode)
-                        {
-                            case HttpStatusCode.NotFound:
-                                result.ErrorMessage = "Sorry, we couldn't find the albums you're looking for. Please try again later.";
-                                break;
+                        result.ErrorMessage = await response.Content.ReadAsStringAsync();
 
-                            case HttpStatusCode.InternalServerError:
-                                result.ErrorMessage = "Sorry, we encountered an unexpected error while trying to load the albums. Please try again later.";
-                                break;
+                    }
+                }
+                catch (Exception ex)
+                {
 
-                            default:
-                                result.ErrorMessage = "Unexpected error occurred";
-                                break;
-                        }                       
+                    result.HasError = true;
+                    result.ErrorMessage = "Sorry, We encountered an unexpected error while trying to connect to the server... Please try again later.";
+                }
+            }
+            return result;
+        }
+
+        public async Task<Response<AlbumDTO>> AddAlbum(AlbumDTO album)
+        {
+            _httpClient = new HttpClient();
+            var result = new Response<AlbumDTO>();
+            using (_httpClient)
+            {
+                try
+                {
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync(albumsUrl, album);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result.Item = await response.Content.ReadFromJsonAsync<AlbumDTO>();
+
+                    }
+                    else
+                    {
+
+                        result.HasError = true;
+                        result.ErrorMessage = await response.Content.ReadAsStringAsync();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.HasError = true;
+                    Console.WriteLine("Inside try - addalbums");
+                    result.ErrorMessage = "Sorry, We encountered an unexpected error while trying to connect to the server... Please try again later.";
+                    Console.WriteLine($"Errorrrrrrrr:{ex.Message}");
+                }
+            }
+            return result;
+        }
+        public async Task<Response<AlbumDTO>> UpdateAlbum(int id, AlbumDTO album)
+        {
+            _httpClient = new HttpClient(); 
+            var result = new Response<AlbumDTO>();
+
+            string updateAlbumByIdUrl = $"{albumsUrl}/{id}";
+            using (_httpClient)
+            {
+                try
+                {
+                    HttpResponseMessage response = await _httpClient.PutAsJsonAsync(updateAlbumByIdUrl, album);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result.Item = await response.Content.ReadFromJsonAsync<AlbumDTO>();
+
+                    }
+                    else
+                    {
+                        result.HasError = true;
+                        result.ErrorMessage = await response.Content.ReadAsStringAsync();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.HasError = true;
+                    Console.WriteLine("Inside try - upa albums");
+                    result.ErrorMessage = "Sorry, We encountered an unexpected error while trying to connect to the server... Please try again later.";
+                }
+            }
+            return result;
+        }
+        public async Task<Response<AlbumDTO>> GetAlbumById(int id)
+        {
+            _httpClient = new HttpClient();
+            string getAlbumByIdUrl = $"{albumsUrl}/{id}";
+            var result = new Response<AlbumDTO>();
+            using (_httpClient)
+            {
+                try
+                {
+                    HttpResponseMessage response = await _httpClient.GetAsync(getAlbumByIdUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result.Item = await response.Content.ReadFromJsonAsync<AlbumDTO>();
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Inside try - getidalbums");
+                        result.HasError = true;
+                        result.ErrorMessage = await response.Content.ReadAsStringAsync();
+
                     }
                 }
                 catch (Exception ex)
@@ -55,40 +145,14 @@ namespace RecordShop_Frontend.Services
                     result.ErrorMessage = "Sorry, We encountered an unexpected error while trying to connect to the server... Please try again later.";
                 }
             }
-            return result;
+                return result;            
         }
-
-        public async Task<AlbumResponse> AddAlbum(AlbumDTO album)
+        public async Task<string> DeleteAlbum(int id)
         {
-            var result = new AlbumResponse();
-
-            try
-            {
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync(albumsUrl, album);
-                if (response.IsSuccessStatusCode)
-                {
-                    result.Album = await response.Content.ReadFromJsonAsync<AlbumDTO>();
-
-                }
-                else
-                {
-                    result.HasError = true;
-                    result.ErrorMessage = await response.Content.ReadAsStringAsync();
-                            
-                }
-            }
-            catch (Exception ex)
-            {
-                result.HasError = true;
-                result.ErrorMessage = "Sorry, We encountered an unexpected error while trying to connect to the server... Please try again later.";
-            }
-            return result;
-        }
-
-        public async Task<string> DeletAlbum(int id)
-        {
+            _httpClient = new HttpClient();
             string deleteAlbumUrl = $"{albumsUrl}/{id}";
-
+            using (_httpClient)
+            {
                 try
                 {
                     HttpResponseMessage response = await _httpClient.DeleteAsync(deleteAlbumUrl);
@@ -105,6 +169,103 @@ namespace RecordShop_Frontend.Services
                     Console.WriteLine($"Error: {error.Message}");
                     return "FAILURE";
                 }
+            }
         }
+        public async Task<Response<List<Artist>>> GetArtists()
+        {
+            _httpClient = new HttpClient();
+            var result = new Response<List<Artist>>();
+            using (_httpClient)
+            {
+                try
+                {
+                    HttpResponseMessage response = await _httpClient.GetAsync(artistUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result.Item = await response.Content.ReadFromJsonAsync<List<Artist>>();
+
+
+                    }
+                    else
+                    {
+                        result.HasError = true;
+                        result.ErrorMessage = await response.Content.ReadAsStringAsync();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    result.HasError = true;
+                    result.ErrorMessage = "Sorry, We encountered an unexpected error while trying to connect to the server... Please try again later.";
+                }
+            }
+            return result;
+        }
+        public async Task<Response<Artist>> AddArtist(Artist newArtist)
+        {
+            _httpClient = new HttpClient();
+            var result = new Response<Artist>();
+            using (_httpClient)
+            {
+                try
+                {
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync(artistUrl, newArtist);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result.Item = await response.Content.ReadFromJsonAsync<Artist>();
+
+                    }
+                    else
+                    {
+
+                        result.HasError = true;
+                        result.ErrorMessage = await response.Content.ReadAsStringAsync();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.HasError = true;
+                    Console.WriteLine("Inside try - addalbums");
+                    result.ErrorMessage = "Sorry, We encountered an unexpected error while trying to connect to the server... Please try again later.";
+                }
+            }
+            return result;
+        }
+        public async Task<Response<Artist>> GetArtistByName(string artistName)
+        {
+            _httpClient = new HttpClient();
+            var result = new Response<Artist>();
+            using (_httpClient)
+            {
+                try
+                {
+                    HttpResponseMessage response = await _httpClient.GetAsync($"{artistUrl}/{artistName}");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result.Item = await response.Content.ReadFromJsonAsync<Artist>();
+
+
+                    }
+                    else
+                    {
+                        result.HasError = true;
+                        result.ErrorMessage = await response.Content.ReadAsStringAsync();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    result.HasError = true;
+                    result.ErrorMessage = "Sorry, We encountered an unexpected error while trying to connect to the server... Please try again later.";
+                }
+            }
+            return result;
+        }
+
     }
 }
