@@ -4,11 +4,11 @@
 <h3 class="text-danger">Sorry! Something went wrong.</h3>
 <p>Error Code: <strong>@Code</strong></p>
 
-@if (Code == "404")
+@if (Code == 404)
 {
     <p>The page you are looking for was not found.</p>
 }
-else if (Code == "500")
+else if (Code == 500)
 {
     <p>Internal Server Error. Please try again later.</p>
 }
@@ -20,7 +20,7 @@ else
 <button class="btn btn-primary" @onclick="GoHome">Go to Home</button>
 
 @code {
-    [Parameter] public string Code { get; set; }
+    [Parameter] public int Code { get; set; }
 
     private void GoHome()
     {

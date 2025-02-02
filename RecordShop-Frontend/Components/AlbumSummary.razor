@@ -2,7 +2,7 @@
 @using RecordShop_Frontend.Services
 
 
-<div class="card  justify-content-center">
+<div class="card  justify-content-center" @onclick="NavigateToDetails" style="cursor: pointer;">
     <div class="card-body">
         <h5 class="card-title">@Album.Title</h5>
         <h6 class="card-subtitle mb-2 text-muted">@Album.ArtistName</h6>
@@ -12,11 +12,14 @@
             <strong>Stock:</strong> @Album.Stock
         </p>
         <p class="text-danger">@status</p>
+@*
+
         <div class="d-flex justify-content-between mt-3">
             <button class="btn btn-outline-primary btn-sm">Update</button>
             <button class="btn btn-outline-danger btn-sm" @onclick="DeleteAlbum">Delete</button>
 
         </div>
+*@
     </div>
 </div>
 @code {
@@ -24,28 +27,13 @@
     public AlbumDTO Album { get; set; }
     [Parameter]
     public EventCallback<AlbumDTO> OnAlbumDelete { get; set; }
- 
-    private string status;
+    [Inject]
+    private NavigationManager navigate{ get; set; }
 
-    private async Task DeleteAlbum()
+    private string status;
+    private void NavigateToDetails()
     {
-        status = "Deleting...";
-        try
-        {
-            var apiClient = new RecordShopApiClient();
-            var response = await apiClient.DeleteAlbum(Album.Id);
-            if (response == "SUCCESS")
-            {
-                await OnAlbumDelete.InvokeAsync(Album);
-            }
-            else
-            {
-                status = "Error deleting album: " + response;
-            }
-        }
-        catch (Exception ex)
-        {
-            status = "Failed to delete: " + ex.Message;
-        }
+        navigate.NavigateTo($"/albums/{Album.Id}");
     }
+
 }

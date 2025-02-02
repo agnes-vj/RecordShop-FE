@@ -1,5 +1,9 @@
 ﻿@page "/albums"
 @rendermode InteractiveServer
+
+@inject NavigationManager NavigationManager
+
+@using Microsoft.AspNetCore.WebUtilities
 @using RecordShop_Frontend.Model
 @using RecordShop_Frontend.Services
 @using RecordShop_Frontend.Components
@@ -28,12 +32,25 @@ else
 @code {
 
     private Response<List<AlbumDTO>> albumsResult = null;
-    
+
     public List<AlbumDTO> Albums { get; set; } = new();
 
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadAlbums();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        bool hasDeleteId = QueryHelpers.ParseQuery(uri.Query).TryGetValue("deletedId", out var deletedIdString);
+
+        if (hasDeleteId)
+        {
+            int.TryParse(deletedIdString, out int deletedId);
+            Albums.RemoveAll(a => a.Id == deletedId);
+        }
+
         await LoadAlbums();
     }
 
@@ -59,5 +76,10 @@ else
     {
         Albums = updatedAlbums;
         StateHasChanged(); 
+    }
+    private async Task HandleAlbumDeleted(int albumId)
+    {
+        Albums.RemoveAll(a => a.Id == albumId); // 🔹 Remove album from list
+        StateHasChanged(); // 🔹 Update UI
     }
 }

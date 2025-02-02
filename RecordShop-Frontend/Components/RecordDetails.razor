@@ -1,4 +1,5 @@
-﻿@using RecordShop_Frontend.Services
+﻿@page "/albums/{AlbumId:int}"
+@using RecordShop_Frontend.Services
 @using RecordShop_Frontend.Model
 
 @inject NavigationManager NavigationManager
@@ -62,28 +63,90 @@ else
                         </div>
 
                         <div class="card-footer justify-content-around align-content-center">
-                            <button type="submit" class="btn btn-primary">Update</button>
-                            <button type="button" class="btn btn-secondary" @onclick=NavigateBack>Cancel</button>
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Update</button>
+                                <button class="btn btn-outline-danger btn-sm" @onclick="ConfirmDelete">
+                                    <i class="bi bi-trash"></i>Delete
+                                 </button>
+                            <button type="button" class="btn btn-secondary btn-sm" @onclick=NavigateBack>Cancel</button>
                         </div>
                      </div>
             </EditForm>
+            <p class="text-danger">@status</p>
         </div>
+
+        <!-- Status Message -->
+        @if (!string.IsNullOrEmpty(statusMessage))
+        {
+            <div class="alert alert-info mt-3">@statusMessage</div>
+        }
     </div>   
 }
 
 @code {
     [Parameter]
+    public int albumId { get; set; }
+    [Parameter] 
+    public EventCallback<int> OnAlbumDeleted { get; set; }
+    private string statusMessage = string.Empty;
     public AlbumDTO Album { get; set; }
     Response<AlbumDTO> albumResult;
     AlbumDTO updatedAlbum = null;
-
+    private string status;
+    protected override async Task OnInitializedAsync()
+    {
+        var apiClient = new RecordShopApiClient();
+        Response<AlbumDTO> response = await apiClient.GetAlbumById(albumId);
+        if (response.HasError)
+            statusMessage = response.ErrorMessage;
+        Album = response.Item;        
+    }
     public async Task updateAlbum()
     {
 
         var apiClient = new RecordShopApiClient();
         Response<AlbumDTO> albumUpdateResult = await apiClient.UpdateAlbum(Album.Id, Album);
-        updatedAlbum = albumUpdateResult.Item;
+        if (!albumUpdateResult.HasError)
+        {
+            updatedAlbum = albumUpdateResult.Item;
+            status = "Successfully Updated";
 
+        }
+        else
+            status = "Error while updating this album: ";
+
+
+    }
+    private async Task DeleteAlbum()
+    {
+        status = "Deleting...";
+        try
+        {
+            var apiClient = new RecordShopApiClient();
+            int albumIdToDelete = Album.Id;
+            var response = await apiClient.DeleteAlbum(albumIdToDelete);
+            if (response == "SUCCESS")
+            {
+                status = "Succesfully Deleted!";
+                await OnAlbumDeleted.InvokeAsync(Album.Id);
+                NavigationManager.NavigateTo("/albums?deletedId={albumIdToDelete}");
+            }
+            else
+            {
+                status = "Error deleting album: " + response;
+            }
+        }
+        catch (Exception ex)
+        {
+            status = "Failed to delete: " + ex.Message;
+        }
+    }
+    private async Task ConfirmDelete()
+    {
+        var isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this Album?");
+        if (isConfirmed)
+        {
+            await DeleteAlbum();
+        }
     }
 
     private async Task NavigateBack()
