@@ -25,8 +25,7 @@
 @code {
     [Parameter]
     public AlbumDTO Album { get; set; }
-    [Parameter]
-    public EventCallback<AlbumDTO> OnAlbumDelete { get; set; }
+
     [Inject]
     private NavigationManager navigate{ get; set; }
 

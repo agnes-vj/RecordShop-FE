@@ -7,7 +7,7 @@
 @using RecordShop_Frontend.Model
 @using RecordShop_Frontend.Services
 @using RecordShop_Frontend.Components
-<h3>RecordsLoader</h3>
+
 
 @if (Albums == null)
 {
@@ -24,13 +24,21 @@ else if ( albumsResult != null && albumsResult.HasError)
         <strong>Error:</strong> @albumsResult.ErrorMessage
     </div>
 }
-else
+else if (!showFeaturedAlbum)
 {
     <AlbumSummaryList Albums="@Albums" AlbumsChanged="UpdateAlbumsList" />
+}
+else if (featuredAlbum != null)
+{ 
+    Console.WriteLine(featuredAlbum.Title);
+    <AlbumSummary Album="@featuredAlbum" />
 }
 
 @code {
 
+    [Parameter]
+    public bool showFeaturedAlbum { get; set; }
+    private AlbumDTO featuredAlbum;
     private Response<List<AlbumDTO>> albumsResult = null;
 
     public List<AlbumDTO> Albums { get; set; } = new();
@@ -39,6 +47,13 @@ else
     protected override async Task OnInitializedAsync()
     {
         await LoadAlbums();
+        if ((Albums != null) && (showFeaturedAlbum))
+        {
+            int randomAlbumId = new Random().Next(1,Albums.Count);
+            featuredAlbum = Albums.FirstOrDefault(album => album.Id == randomAlbumId);
+            Console.WriteLine("Id" + featuredAlbum.Id);
+
+        }
     }
     protected override async Task OnParametersSetAsync()
     {
