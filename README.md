@@ -1,7 +1,7 @@
 
-# **🎶 Melody RecordShop Frontend 🎶**
+# **🎶 Melody Record Shop Frontend 🎶**
 
-Welcome to the **RecordShop Frontend** project! This is a Blazor Web app used to display and interact with a catalog of albums in the Melody Record Shop. The frontend fetches and displays a list of albums, allowing users to view, add, delete, and search for records.
+Welcome to the **Melody Record Shop Frontend** project! This is a Blazor Web app used to display and interact with a catalog of albums in the Melody Record Shop. The frontend fetches and displays a list of albums, allowing users to view, add, delete, and search for records.
 
 
 
