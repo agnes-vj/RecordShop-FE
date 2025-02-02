@@ -2,14 +2,11 @@
 
 <h3>Albums</h3>
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-
-        @foreach (var album in Albums)
-        {
-            <div class="col">
-            <AlbumSummary album="@album" />
-            </div>
-        }
-
+    <Virtualize Items="@Albums" Context="album" ItemSize="8">                 
+        <div class="col">
+             <AlbumSummary Album="@album" />
+        </div> 
+    </Virtualize>
 </div>
 @code
 {

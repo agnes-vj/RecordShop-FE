@@ -37,7 +37,7 @@ else if (featuredAlbum != null)
 @code {
 
     [Parameter]
-    public bool showFeaturedAlbum { get; set; }
+    public bool showFeaturedAlbum { get; set; } 
     private AlbumDTO featuredAlbum;
     private Response<List<AlbumDTO>> albumsResult = null;
 
@@ -50,9 +50,7 @@ else if (featuredAlbum != null)
         if ((Albums != null) && (showFeaturedAlbum))
         {
             int randomAlbumId = new Random().Next(1,Albums.Count);
-            featuredAlbum = Albums.FirstOrDefault(album => album.Id == randomAlbumId);
-            Console.WriteLine("Id" + featuredAlbum.Id);
-
+            featuredAlbum = Albums.FirstOrDefault(album => album.Id == randomAlbumId);        
         }
     }
     protected override async Task OnParametersSetAsync()
@@ -94,7 +92,7 @@ else if (featuredAlbum != null)
     }
     private async Task HandleAlbumDeleted(int albumId)
     {
-        Albums.RemoveAll(a => a.Id == albumId); // 🔹 Remove album from list
-        StateHasChanged(); // 🔹 Update UI
+        Albums.RemoveAll(a => a.Id == albumId); 
+        StateHasChanged(); 
     }
 }
