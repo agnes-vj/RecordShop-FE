@@ -17,57 +17,58 @@
 
 else
 {
-    <EditForm FormName="EditAlbum" Model="Album" OnValidSubmit="updateAlbum">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-        <div class="card shadow-lg p-4">
-            <div class="card-header">
-                Update Album
+    <div class="container mt-4 ">
+        <div class="card shadow-lg" style="max-width: 1100px; width: 100%;">
+            <div class="card-header text-white" style="background: #486387;">
+                <h5 class="mb-0">🎵 Update Album</h5>
             </div>
-          <div class="card-body" mb-3>
-            <div class="mb-3">
-                <label for="id" class="form-label">Id</label>
-                <InputNumber id="id" class="form-control" @bind-Value="Album.Id" />
-                <ValidationMessage For="@(() => Album.Id)" />
-            </div>
+            <EditForm FormName="EditAlbum" Model="Album" OnValidSubmit="updateAlbum">
+            <DataAnnotationsValidator />
+            <ValidationSummary />          
+                    <div class="card-body" mb-3>
+                        <div class="mb-3">
+                            <label for="id" class="form-label">Id</label>
+                            <InputNumber id="id" class="form-control" @bind-Value="Album.Id" />
+                            <ValidationMessage For="@(() => Album.Id)" />
+                        </div>
 
-            <div class="mb-3">
-                <label for="title" class="form-label">Title</label>
-                <InputText id="title" class="form-control" @bind-Value="Album.Title" />
-                <ValidationMessage For="@(() => Album.Title)" />
-            </div>
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <InputText id="title" class="form-control" @bind-Value="Album.Title" />
+                            <ValidationMessage For="@(() => Album.Title)" />
+                        </div>
 
-            <div class="mb-3">
-                <label for="artist" class="form-label">Artist</label>
-                <InputText id="artist" class="form-control" @bind-Value="Album.ArtistName" />
-                <ValidationMessage For="@(() => Album.ArtistName)" />
-            </div>
+                        <div class="mb-3">
+                            <label for="artist" class="form-label">Artist</label>
+                            <InputText id="artist" class="form-control" @bind-Value="Album.ArtistName" />
+                            <ValidationMessage For="@(() => Album.ArtistName)" />
+                        </div>
 
-            <div class="mb-3">
-                <label for="genre" class="form-label">Genre</label>
-                <InputText id="genre" class="form-control" @bind-Value="Album.MusicGenre" />
-                <ValidationMessage For="@(() => Album.MusicGenre)" />
-            </div>
+                        <div class="mb-3">
+                            <label for="genre" class="form-label">Genre</label>
+                            <InputText id="genre" class="form-control" @bind-Value="Album.MusicGenre" />
+                            <ValidationMessage For="@(() => Album.MusicGenre)" />
+                        </div>
 
-            <div class="mb-3">
-                <label for="releaseDate" class="form-label">Release Date</label>
-                <InputNumber id="releaseDate" class="form-control" @bind-Value="Album.ReleaseYear" />
-                <ValidationMessage For="@(() => Album.ReleaseYear)" />
-            </div>
-            <div class="mb-3">
-                <label for="stock" class="form-label">Stock</label>
-                <InputNumber id="stock" class="form-control" @bind-Value="Album.Stock" />
-                <ValidationMessage For="@(() => Album.Stock)" />
-            </div>
+                        <div class="mb-3">
+                            <label for="releaseDate" class="form-label">Release Date</label>
+                            <InputNumber id="releaseDate" class="form-control" @bind-Value="Album.ReleaseYear" />
+                            <ValidationMessage For="@(() => Album.ReleaseYear)" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="stock" class="form-label">Stock</label>
+                            <InputNumber id="stock" class="form-control" @bind-Value="Album.Stock" />
+                            <ValidationMessage For="@(() => Album.Stock)" />
+                        </div>
 
-            <div class="card-footer justify-content-around align-content-center">
-                <button type="submit" class="btn btn-primary">Update</button>
-                <button type="button" class="btn btn-secondary" @onclick=NavigateBack>Cancel</button>
-            </div>
-         </div>
+                        <div class="card-footer justify-content-around align-content-center">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="button" class="btn btn-secondary" @onclick=NavigateBack>Cancel</button>
+                        </div>
+                     </div>
+            </EditForm>
         </div>
-    </EditForm>
-   
+    </div>   
 }
 
 @code {

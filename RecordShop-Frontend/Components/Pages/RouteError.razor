@@ -1,0 +1,29 @@
+﻿@page "/StatusCode/{code}"
+@inject NavigationManager NavManager
+
+<h3 class="text-danger">Sorry! Something went wrong.</h3>
+<p>Error Code: <strong>@Code</strong></p>
+
+@if (Code == "404")
+{
+    <p>The page you are looking for was not found.</p>
+}
+else if (Code == "500")
+{
+    <p>Internal Server Error. Please try again later.</p>
+}
+else
+{
+    <p>Unexpected error occurred.</p>
+}
+
+<button class="btn btn-primary" @onclick="GoHome">Go to Home</button>
+
+@code {
+    [Parameter] public string Code { get; set; }
+
+    private void GoHome()
+    {
+        NavManager.NavigateTo("/");
+    }
+}

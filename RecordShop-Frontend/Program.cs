@@ -32,5 +32,6 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(RecordShop_Frontend.Client._Imports).Assembly);
+app.UseStatusCodePagesWithRedirects("/statuscode/{0}");
 
 app.Run();
