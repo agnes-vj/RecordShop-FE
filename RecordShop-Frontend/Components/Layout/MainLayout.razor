@@ -1,24 +1,53 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager Navigation
 
-<Header />
+<div class="d-flex flex-column min-vh-100">
 
-<div class="d-flex">
+    <nav class="navbar navbar-expand-lg" style="background: #144272; padding: 15px;">
+        <div class="container-fluid">
+            <a class="navbar-brand text-light fw-bold" href="/">🎵 Record Shop</a>
+          
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-    <NavMenu />
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="/">🏠 Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="/albums">📀 View All Albums</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="/albums/add">➕ Add Album</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="/search">🔍 Search Album</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-outline-warning ms-3" @onclick="Logout">🚪 Logout</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <div class="flex-grow-1 d-flex flex-column">
-        <main class="content p-4 flex-grow-1">
+
+    <div class="container flex-grow-1 mt-4">
+        <main>
             @Body
         </main>
-
-        <footer class="footer text-center py-3">
-            &copy; Melody Records 2025
-        </footer>
     </div>
-</div>
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
+
+    <footer class="text-center text-light p-3 mt-auto" style="background: #144272; border-top: 4px solid #FFD700;">
+        <small>&copy; 2024 Record Shop - All rights reserved.</small>
+    </footer>
 </div>
 
+@code {
+    private void Logout()
+    {
+        Navigation.NavigateTo("/logout", forceLoad: true);
+    }
+}
